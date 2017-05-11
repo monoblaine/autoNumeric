@@ -46,6 +46,8 @@
 
 /* global module, require, define */
 
+const jQueryOriginalVal = jQuery.fn.val;
+
 // Functions names for ES6 exports
 let autoFormat;
 let autoUnFormat;
@@ -3193,7 +3195,7 @@ if (typeof define === 'function' && define.amd) {
             settings.hasFocus = true;
 
             if (settings.negativeBracketsTypeOnBlur !== null && settings.negativeSignCharacter !== '') {
-                $this.val(toggleNegativeBracket(e.target.value, settings));
+                jQueryOriginalVal.call($this, toggleNegativeBracket(e.target.value, settings));
             }
 
             // clean the value to compare to rawValue
@@ -3208,17 +3210,17 @@ if (typeof define === 'function' && define.amd) {
             if (settings.decimalPlacesShownOnFocus) {
                 settings.decimalPlacesOverride = settings.decimalPlacesShownOnFocus;
                 roundedValue = roundValue(settings.rawValue, settings);
-                $this.val(addGroupSeparators(roundedValue, settings));
+                jQueryOriginalVal.call($this, addGroupSeparators(roundedValue, settings));
             } else if (settings.scaleDivisor) {
                 settings.decimalPlacesOverride = Number(settings.oDec);
                 roundedValue = roundValue(settings.rawValue, settings);
-                $this.val(addGroupSeparators(roundedValue, settings));
+                jQueryOriginalVal.call($this, addGroupSeparators(roundedValue, settings));
             } else if (settings.noSeparatorOnFocus) {
                 settings.digitGroupSeparator = '';
                 settings.currencySymbol = '';
                 settings.suffixText = '';
                 roundedValue = roundValue(settings.rawValue, settings);
-                $this.val(addGroupSeparators(roundedValue, settings));
+                jQueryOriginalVal.call($this, addGroupSeparators(roundedValue, settings));
             } else if (result !== settings.rawValue) {
                 // updates the rawValue
                 $this.autoNumeric('set', result);
@@ -3229,7 +3231,7 @@ if (typeof define === 'function' && define.amd) {
             holder.lastVal = holder.valueOnFocus;
             const onEmpty = checkEmpty(holder.valueOnFocus, settings, true);
             if ((onEmpty !== null && onEmpty !== '') && settings.emptyInputBehavior === 'focus') {
-                $this.val(onEmpty);
+                jQueryOriginalVal.call($this, onEmpty);
                 if (onEmpty === settings.currencySymbol && settings.currencySymbolPlacement === 's') {
                     setElementSelection(e.target, 0, 0);
                 }
@@ -3581,7 +3583,7 @@ if (typeof define === 'function' && define.amd) {
 
             if (groupedValue !== origValue) {
                 groupedValue = (settings.scaleSymbol) ? groupedValue + settings.scaleSymbol : groupedValue;
-                $this.val(groupedValue);
+                jQueryOriginalVal.call($this, groupedValue);
             }
 
             if (groupedValue !== holder.valueOnFocus) {
@@ -4023,7 +4025,7 @@ if (typeof define === 'function' && define.amd) {
                 const $settings = holder.settingsClone;
 
                 if ($settings.unformatOnSubmit) {
-                    $this.val($settings.rawValue);
+                    jQueryOriginalVal.call($this, $settings.rawValue);
                 }
             }
         });
@@ -4065,7 +4067,7 @@ if (typeof define === 'function' && define.amd) {
         let setValue = true;
 
         if ($input) {
-            const currentValue = $this.val();
+            const currentValue = jQueryOriginalVal.call($this);
             /*
              * If the input value has been set by the dev, but not directly as an attribute in the html, then it takes
              * precedence and should get formatted on init (if this input value is a valid number and that the
@@ -4134,7 +4136,7 @@ if (typeof define === 'function' && define.amd) {
                         setValue = false;
                         break;
                     case 'always':
-                        $this.val(settings.currencySymbol);
+                        jQueryOriginalVal.call($this, settings.currencySymbol);
                         setValue = false;
                         break;
                     case 'zero':
@@ -4580,7 +4582,7 @@ if (typeof define === 'function' && define.amd) {
                 const $this = getCurrentElement(this);
                 const settings = $this.data('autoNumeric');
                 if (typeof settings === 'object') {
-                    $this.val('');
+                    jQueryOriginalVal.call($this, '');
                     saveValueToPersistentStorage($this[0], settings, 'wipe');
                     $this.removeData('autoNumeric');
                     $this.off('.autoNumeric');
@@ -4600,7 +4602,7 @@ if (typeof define === 'function' && define.amd) {
                 const $this = getCurrentElement(this);
                 const settings = $this.data('autoNumeric');
                 if (typeof settings === 'object') {
-                    $this.val('');
+                    jQueryOriginalVal.call($this, '');
                     settings.rawValue = '';
                     saveValueToPersistentStorage($this[0], settings, 'wipe');
                 }
@@ -4630,7 +4632,7 @@ if (typeof define === 'function' && define.amd) {
                 getAutoNumericHolder($this, settings, true);
 
                 // Reformat the input value with the new settings
-                if ($this.val() !== '' || $this.text() !== '') {
+                if (jQueryOriginalVal.call($this) !== '' || $this.text() !== '') {
                     return $this.autoNumeric('set', strip);
                 }
             });
@@ -4665,7 +4667,7 @@ if (typeof define === 'function' && define.amd) {
 
                 let value = toNumericValue(newValue, settings);
                 if (isNaN(value)) {
-                    return $this.val('');
+                    return jQueryOriginalVal.call($this, '');
                 }
 
                 if (value !== '') {
@@ -4741,10 +4743,10 @@ if (typeof define === 'function' && define.amd) {
 
                         throwError(`The value [${attemptedValue}] being set falls outside of the minimumValue [${settings.minimumValue}] and maximumValue [${settings.maximumValue}] range set for this element`);
 
-                        return $this.val('');
+                        return jQueryOriginalVal.call($this, '');
                     }
                 } else {
-                    return $this.val('');
+                    return jQueryOriginalVal.call($this, '');
                 }
 
                 if (!settings.hasFocus && settings.scaleSymbol) {
@@ -4752,7 +4754,7 @@ if (typeof define === 'function' && define.amd) {
                 }
 
                 if ($input) {
-                    return $this.val(value);
+                    return jQueryOriginalVal.call($this, value);
                 }
 
                 if (isInArray($this.prop('tagName').toLowerCase(), settings.tagList)) {
@@ -4781,7 +4783,7 @@ if (typeof define === 'function' && define.amd) {
                 const settings = $this.data('autoNumeric');
                 if (typeof settings === 'object') {
                     settings.hasFocus = true;
-                    $this.val($this.autoNumeric('getLocalized'));
+                    jQueryOriginalVal.call($this, $this.autoNumeric('getLocalized'));
                 }
             });
         },
@@ -4801,7 +4803,7 @@ if (typeof define === 'function' && define.amd) {
                 const $this = getCurrentElement(this);
                 const settings = $this.data('autoNumeric');
                 if (typeof settings === 'object') {
-                    $this.autoNumeric('set', $this.val());
+                    $this.autoNumeric('set', jQueryOriginalVal.call($this));
                 }
             });
         },
@@ -4826,7 +4828,7 @@ if (typeof define === 'function' && define.amd) {
             // determine the element type then use .eq(0) selector to grab the value of the first element in selector
             let value = '';
             if ($input) {
-                value = $this.eq(0).val();
+                value = jQueryOriginalVal.call($this.eq(0));
             } else if (isInArray($this.prop('tagName').toLowerCase(), settings.tagList)) {
                 value = $this.eq(0).text();
             } else {
@@ -5442,6 +5444,45 @@ if (typeof define === 'function' && define.amd) {
         CustomEvent.prototype = window.Event.prototype;
         window.CustomEvent = CustomEvent;
     })();
+
+    // Hijack the original val fn in order to
+    // use $autoNumeric.val() and be able to get/set
+    // the unmasked value.
+    jQuery.fn.val = function (value) {
+        const me = this,
+              $me = $(me);
+
+        // If we're not dealing with an instance of autoNumeric,
+        // simply call the original jQuery.fn.val
+        if ($me.data('autoNumeric') === undefined) {
+            return jQueryOriginalVal.apply(me, arguments);
+        }
+
+        if (!arguments.length) { // We're trying to read the numeric value
+            return $me.autoNumeric('get');
+        }
+        else { // We're trying to set a value
+            const originalVal = value;
+            let numericValue;
+
+            if (typeof value === 'string') {
+                value = value.replace(',', '.');
+                numericValue = parseFloat(value, 10);
+
+                if (isNaN(numericValue)) {
+                    throw `"${originalVal}" is not a number.`;
+                }
+            }
+            else if (typeof value !== 'number') {
+                throw `The type "${typeof value}" is not supported.`;
+            }
+            else {
+                numericValue = value;
+            }
+
+            return $me.autoNumeric('set', numericValue);
+        }
+    };
 }));
 
 /**
