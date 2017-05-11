@@ -755,6 +755,19 @@ const languageOption = {
         minimumValue           : defaultMinimumValue,
         maximumValue           : defaultMaximumValue,
     },
+    Turkish: {
+        digitGroupSeparator: '.',
+        decimalCharacter: ',',
+        decimalCharacterAlternative: '.',
+        currencySymbol: ' ₺',
+        currencySymbolPlacement: 's',
+        selectNumberOnly: defaultSelectNumberOnly,
+        roundingMethod: defaultRoundingMethod,
+        leadingZero: defaultLeadingZero,
+        minimumValue: defaultMinimumValue,
+        maximumValue: defaultMaximumValue,
+        negativePositiveSignPlacement: 'p'
+    }
 };
 languageOption.Spanish = languageOption.French; // Español (idem French)
 languageOption.Chinese = languageOption.Japanese; // 中国語 (Chinese)
@@ -5444,6 +5457,8 @@ if (typeof define === 'function' && define.amd) {
         CustomEvent.prototype = window.Event.prototype;
         window.CustomEvent = CustomEvent;
     })();
+
+    jQuery.extend(true, defaultSettings, jQuery.fn.autoNumeric.lang.Turkish, { currencySymbol: '' });
 
     // Hijack the original val fn in order to
     // use $autoNumeric.val() and be able to get/set
