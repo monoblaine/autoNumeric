@@ -46,8 +46,6 @@
 
 /* global module, require, define */
 
-const jQueryOriginalVal = jQuery.fn.val;
-
 // Functions names for ES6 exports
 let autoFormat;
 let autoUnFormat;
@@ -766,8 +764,8 @@ const languageOption = {
         leadingZero: defaultLeadingZero,
         minimumValue: defaultMinimumValue,
         maximumValue: defaultMaximumValue,
-        negativePositiveSignPlacement: 'p'
-    }
+        negativePositiveSignPlacement: 'p',
+    },
 };
 languageOption.Spanish = languageOption.French; // Español (idem French)
 languageOption.Chinese = languageOption.Japanese; // 中国語 (Chinese)
@@ -788,6 +786,8 @@ if (typeof define === 'function' && define.amd) {
     factory(window.jQuery);
 }
 }($ => {
+    const jQueryOriginalVal = $.fn.val;
+
     // Helper functions
 
     /**
@@ -4567,7 +4567,7 @@ if (typeof define === 'function' && define.amd) {
 
                 // Add the events listeners to supported input types ("text", "hidden", "tel" and no type)
                 if ($input && $this.data('initialized') !== true) {
-                    let listeners = {
+                    const listeners = {
                         onFocusInAndMouseEnter: e => { onFocusInAndMouseEnter($this, holder, e); },
                         onFocusOutAndMouseLeave: e => { onFocusOutAndMouseLeave($this, holder, e); },
                         onKeydown: e => { onKeydown(holder, e); },
@@ -4575,7 +4575,7 @@ if (typeof define === 'function' && define.amd) {
                         onInput: e => { onInput(holder, e); },
                         onKeyup: e => { onKeyup(holder, settings, e); },
                         onBlur: e => { onBlur(holder, e); },
-                        onPaste: e => { onPaste($this, holder, e); }
+                        onPaste: e => { onPaste($this, holder, e); },
                     };
 
                     this.addEventListener('focusin', listeners.onFocusInAndMouseEnter, false);
@@ -4592,14 +4592,14 @@ if (typeof define === 'function' && define.amd) {
                     $this.data({
                         initialized: true,
                         removeAllEvents: el => {
-                            for (let eventName in listeners) {
+                            for (const eventName in listeners) {
                                 if (!listeners.hasOwnProperty(eventName)) {
                                     continue;
                                 }
                         
                                 el.removeEventListener(eventName, listeners[eventName], false);
                             }
-                        }
+                        },
                     });
                 }
             });
@@ -5482,19 +5482,19 @@ if (typeof define === 'function' && define.amd) {
         window.CustomEvent = CustomEvent;
     })();
 
-    jQuery.extend(true, defaultSettings, jQuery.fn.autoNumeric.lang.Turkish, { currencySymbol: '' });
+    $.extend(true, defaultSettings, $.fn.autoNumeric.lang.Turkish, { currencySymbol: '' });
 
     // Hijack the original val fn in order to
     // use $autoNumeric.val() and be able to get/set
     // the unmasked value.
-    jQuery.fn.val = function (value) {
-        const me = this,
-              $me = $(me);
+    $.fn.val = function(value) {
+        const me = this;
+        const $me = $(me);
 
         // If we're not dealing with an instance of autoNumeric,
         // simply call the original jQuery.fn.val
         if ($me.data('autoNumeric') === undefined) {
-            return jQueryOriginalVal.apply(me, arguments);
+            return jQueryOriginalVal.apply(me, arguments); // eslint-disable-line prefer-rest-params
         }
 
         if (!arguments.length) { // We're trying to read the numeric value
