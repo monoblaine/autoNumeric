@@ -4566,18 +4566,41 @@ if (typeof define === 'function' && define.amd) {
                 settings.runOnce = true;
 
                 // Add the events listeners to supported input types ("text", "hidden", "tel" and no type)
-                if ($input) {
-                    this.addEventListener('focusin', e => { onFocusInAndMouseEnter($this, holder, e); }, false);
-                    this.addEventListener('mouseenter', e => { onFocusInAndMouseEnter($this, holder, e); }, false);
-                    this.addEventListener('blur', e => { onFocusOutAndMouseLeave($this, holder, e); }, false);
-                    this.addEventListener('mouseleave', e => { onFocusOutAndMouseLeave($this, holder, e); }, false);
-                    this.addEventListener('keydown', e => { onKeydown(holder, e); }, false);
-                    this.addEventListener('keypress', e => { onKeypress(holder, e); }, false);
-                    this.addEventListener('input', e => { onInput(holder, e); }, false);
-                    this.addEventListener('keyup', e => { onKeyup(holder, settings, e); }, false);
-                    this.addEventListener('blur', e => { onBlur(holder, e); }, false);
-                    this.addEventListener('paste', e => { onPaste($this, holder, e); }, false);
+                if ($input && $this.data('initialized') !== true) {
+                    let listeners = {
+                        onFocusInAndMouseEnter: e => { onFocusInAndMouseEnter($this, holder, e); },
+                        onFocusOutAndMouseLeave: e => { onFocusOutAndMouseLeave($this, holder, e); },
+                        onKeydown: e => { onKeydown(holder, e); },
+                        onKeypress: e => { onKeypress(holder, e); },
+                        onInput: e => { onInput(holder, e); },
+                        onKeyup: e => { onKeyup(holder, settings, e); },
+                        onBlur: e => { onBlur(holder, e); },
+                        onPaste: e => { onPaste($this, holder, e); }
+                    };
+
+                    this.addEventListener('focusin', listeners.onFocusInAndMouseEnter, false);
+                    this.addEventListener('mouseenter', listeners.onFocusInAndMouseEnter, false);
+                    this.addEventListener('blur', listeners.onFocusOutAndMouseLeave, false);
+                    this.addEventListener('mouseleave', listeners.onFocusOutAndMouseLeave, false);
+                    this.addEventListener('keydown', listeners.onKeydown, false);
+                    this.addEventListener('keypress', listeners.onKeypress, false);
+                    this.addEventListener('input', listeners.onInput, false);
+                    this.addEventListener('keyup', listeners.onKeyup, false);
+                    this.addEventListener('blur', listeners.onBlur, false);
+                    this.addEventListener('paste', listeners.onPaste, false);
                     onSubmit($this, holder); //TODO Switch to `addEventListener'
+                    $this.data({
+                        initialized: true,
+                        removeAllEvents: el => {
+                            for (let eventName in listeners) {
+                                if (!listeners.hasOwnProperty(eventName)) {
+                                    continue;
+                                }
+                        
+                                el.removeEventListener(eventName, listeners[eventName], false);
+                            }
+                        }
+                    });
                 }
             });
         },
@@ -4597,7 +4620,8 @@ if (typeof define === 'function' && define.amd) {
                 if (typeof settings === 'object') {
                     jQueryOriginalVal.call($this, '');
                     saveValueToPersistentStorage($this[0], settings, 'wipe');
-                    $this.removeData('autoNumeric');
+                    $this.data('removeAllEvents')(this);
+                    $this.removeData('autoNumeric', 'initialized', 'removeAllEvents');
                     $this.off('.autoNumeric');
                 }
             });
