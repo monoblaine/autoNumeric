@@ -4591,14 +4591,16 @@ if (typeof define === 'function' && define.amd) {
                     onSubmit($this, holder); //TODO Switch to `addEventListener'
                     $this.data({
                         initialized: true,
-                        removeAllEvents: el => {
-                            for (const eventName in listeners) {
-                                if (!listeners.hasOwnProperty(eventName)) {
-                                    continue;
+                        misc: {
+                            removeAllEvents: el => {
+                                for (const eventName in listeners) {
+                                    if (!listeners.hasOwnProperty(eventName)) {
+                                        continue;
+                                    }
+                            
+                                    el.removeEventListener(eventName, listeners[eventName], false);
                                 }
-                        
-                                el.removeEventListener(eventName, listeners[eventName], false);
-                            }
+                            },
                         },
                     });
                 }
