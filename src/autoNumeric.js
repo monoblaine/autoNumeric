@@ -4567,7 +4567,7 @@ if (typeof define === 'function' && define.amd) {
 
                 // Add the events listeners to supported input types ("text", "hidden", "tel" and no type)
                 if ($input && $this.data('initialized') !== true) {
-                    const listeners = {
+                    const eventHandlers = {
                         onFocusInAndMouseEnter: e => { onFocusInAndMouseEnter($this, holder, e); },
                         onFocusOutAndMouseLeave: e => { onFocusOutAndMouseLeave($this, holder, e); },
                         onKeydown: e => { onKeydown(holder, e); },
@@ -4577,29 +4577,35 @@ if (typeof define === 'function' && define.amd) {
                         onBlur: e => { onBlur(holder, e); },
                         onPaste: e => { onPaste($this, holder, e); },
                     };
+                    const eventConfigs = [
+                        { name: 'focusin', handler: eventHandlers.onFocusInAndMouseEnter },
+                        { name: 'mouseenter', handler: eventHandlers.onFocusInAndMouseEnter },
+                        { name: 'blur', handler: eventHandlers.onFocusOutAndMouseLeave },
+                        { name: 'mouseleave', handler: eventHandlers.onFocusOutAndMouseLeave },
+                        { name: 'keydown', handler: eventHandlers.onKeydown },
+                        { name: 'keypress', handler: eventHandlers.onKeypress },
+                        { name: 'input', handler: eventHandlers.onInput },
+                        { name: 'keyup', handler: eventHandlers.onKeyup },
+                        { name: 'blur', handler: eventHandlers.onBlur },
+                        { name: 'paste', handler: eventHandlers.onPaste },
+                    ];
 
-                    this.addEventListener('focusin', listeners.onFocusInAndMouseEnter, false);
-                    this.addEventListener('mouseenter', listeners.onFocusInAndMouseEnter, false);
-                    this.addEventListener('blur', listeners.onFocusOutAndMouseLeave, false);
-                    this.addEventListener('mouseleave', listeners.onFocusOutAndMouseLeave, false);
-                    this.addEventListener('keydown', listeners.onKeydown, false);
-                    this.addEventListener('keypress', listeners.onKeypress, false);
-                    this.addEventListener('input', listeners.onInput, false);
-                    this.addEventListener('keyup', listeners.onKeyup, false);
-                    this.addEventListener('blur', listeners.onBlur, false);
-                    this.addEventListener('paste', listeners.onPaste, false);
+                    for (const eventConfig of eventConfigs) {
+                        this.addEventListener(eventConfig.name, eventConfig.handler, false);
+                    }
+
                     onSubmit($this, holder); //TODO Switch to `addEventListener'
+                    
                     $this.data({
                         initialized: true,
                         misc: {
                             removeAllEvents: el => {
-                                for (const eventName in listeners) {
-                                    if (!listeners.hasOwnProperty(eventName)) {
-                                        continue;
-                                    }
-                            
-                                    el.removeEventListener(eventName, listeners[eventName], false);
+                                for (const eventConfig of eventConfigs) {
+                                    el.removeEventListener(eventConfig.name, eventConfig.handler, false);
                                 }
+
+                                $(el).closest('form')
+                                    .off('.autoNumeric');
                             },
                         },
                     });
