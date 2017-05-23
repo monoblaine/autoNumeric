@@ -4613,16 +4613,20 @@ if (typeof define === 'function' && define.amd) {
          *
          * @example $(someSelector).autoNumeric("destroy"); // Destroys autoNumeric on this selected element
          *
+         * @param {Boolean} clearValue If TRUE, then this function clears the text box upon destruction.
          * @returns {*|jQuery}
          */
-        destroy() {
+        destroy(clearValue = false) {
             return $(this).each(function() {
                 const $this = getCurrentElement(this);
                 const settings = $this.data('autoNumeric');
                 if (typeof settings === 'object') {
-                    jQueryOriginalVal.call($this, '');
+                    if (clearValue === true) {
+                        jQueryOriginalVal.call($this, '');
+                    }
+                    
                     saveValueToPersistentStorage($this[0], settings, 'wipe');
-                    $this.data('removeAllEvents')(this);
+                    $this.data('misc').removeAllEvents(this);
                     $this.removeData('autoNumeric', 'initialized', 'removeAllEvents');
                     $this.off('.autoNumeric');
                 }
