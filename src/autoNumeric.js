@@ -4627,10 +4627,7 @@ if (typeof define === 'function' && define.amd) {
                 const $this = getCurrentElement(this);
                 const settings = $this.data('autoNumeric');
                 if (typeof settings === 'object') {
-                    if (clearValue === true) {
-                        jQueryOriginalVal.call($this, '');
-                    }
-                    
+                    jQueryOriginalVal.call($this, clearValue === true ? '' : $this.autoNumeric('get'));
                     saveValueToPersistentStorage($this[0], settings, 'wipe');
                     $this.data('misc').removeAllEvents(this);
                     $this.removeData('autoNumeric', 'initialized', 'removeAllEvents');
