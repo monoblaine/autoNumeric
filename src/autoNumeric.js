@@ -306,6 +306,12 @@ const defaultSettings = {
      */
     allowDecimalPadding: true,
 
+    /*
+     * If true, all text within the input will automatically be
+     * selected when input gets focus and the value is equal to zero.
+     */
+    selectAllOnFocusIfZero: false,
+
     /* Adds brackets on negative values (ie. transforms '-$ 999.99' to '(999.99)')
      * Those brackets are visible only when the field does NOT have the focus.
      * The left and right symbols should be enclosed in quotes and separated by a comma
@@ -4364,6 +4370,7 @@ if (typeof define === 'function' && define.amd) {
             onInvalidPaste               : true,
             roundingMethod               : true,
             allowDecimalPadding          : true,
+            selectAllOnFocusIfZero       : true,
             negativeBracketsTypeOnBlur   : true,
             emptyInputBehavior           : true,
             leadingZero                  : true,
@@ -4576,6 +4583,7 @@ if (typeof define === 'function' && define.amd) {
                         onKeyup: e => { onKeyup(holder, settings, e); },
                         onBlur: e => { onBlur(holder, e); },
                         onPaste: e => { onPaste($this, holder, e); },
+                        onJqFocus: () => { if (settings.selectAllOnFocusIfZero && $this.autoNumeric('getNumber') === 0) { setTimeout(() => $this.select(), 0); } },
                     };
                     const eventConfigs = [
                         { name: 'focusin', handler: eventHandlers.onFocusInAndMouseEnter },
@@ -4596,6 +4604,8 @@ if (typeof define === 'function' && define.amd) {
 
                     onSubmit($this, holder); //TODO Switch to `addEventListener'
                     
+                    $this.on('focus', eventHandlers.onJqFocus);
+
                     $this.data({
                         initialized: true,
                         misc: {
@@ -4603,6 +4613,8 @@ if (typeof define === 'function' && define.amd) {
                                 for (const eventConfig of eventConfigs) {
                                     el.removeEventListener(eventConfig.name, eventConfig.handler, false);
                                 }
+
+                                $(el).off('focus', eventHandlers.onJqFocus);
 
                                 $(el).closest('form')
                                     .off('.autoNumeric');
@@ -5340,6 +5352,10 @@ if (typeof define === 'function' && define.amd) {
 
         if (!isTrueOrFalseString(options.allowDecimalPadding) && !isBoolean(options.allowDecimalPadding)) {
             throwError(`The control decimal padding option 'allowDecimalPadding' is invalid ; it should be either 'false' or 'true', [${options.allowDecimalPadding}] given.`);
+        }
+
+        if (!isTrueOrFalseString(options.selectAllOnFocusIfZero) && !isBoolean(options.selectAllOnFocusIfZero)) {
+            throwError(`The option 'selectAllOnFocusIfZero' is invalid ; it should be either 'false' or 'true', [${options.selectAllOnFocusIfZero}] given.`);
         }
 
         if (!isNull(options.negativeBracketsTypeOnBlur) && !isInArray(options.negativeBracketsTypeOnBlur, ['(,)', '[,]', '<,>', '{,}'])) {
