@@ -5530,7 +5530,12 @@ if (typeof define === 'function' && define.amd) {
             let numericValue;
 
             if (typeof value === 'string') {
-                value = value.replace(',', '.');
+                value = value.trim().replace(',', '.');
+
+                if (value === '') {
+                    return $me;
+                }
+
                 numericValue = parseFloat(value, 10);
 
                 if (isNaN(numericValue)) {
