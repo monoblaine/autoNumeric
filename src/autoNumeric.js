@@ -4603,7 +4603,7 @@ if (typeof define === 'function' && define.amd) {
                     }
 
                     onSubmit($this, holder); //TODO Switch to `addEventListener'
-                    
+
                     $this.on('focus', eventHandlers.onJqFocus);
 
                     $this.data({
