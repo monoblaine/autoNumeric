@@ -5518,7 +5518,7 @@ if (typeof define === 'function' && define.amd) {
 
         // If we're not dealing with an instance of autoNumeric,
         // simply call the original jQuery.fn.val
-        if ($me.data('autoNumeric') === undefined) {
+        if ($me.data('autoNumeric') == null) {
             return jQueryOriginalVal.apply(me, arguments); // eslint-disable-line prefer-rest-params
         }
 
