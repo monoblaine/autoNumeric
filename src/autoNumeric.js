@@ -4598,9 +4598,7 @@ if (typeof define === 'function' && define.amd) {
                         { name: 'paste', handler: eventHandlers.onPaste },
                     ];
 
-                    for (const eventConfig of eventConfigs) {
-                        this.addEventListener(eventConfig.name, eventConfig.handler, false);
-                    }
+                    eventConfigs.forEach(eventConfig => this.addEventListener(eventConfig.name, eventConfig.handler, false));
 
                     onSubmit($this, holder); //TODO Switch to `addEventListener'
 
@@ -4610,9 +4608,7 @@ if (typeof define === 'function' && define.amd) {
                         initialized: true,
                         misc: {
                             removeAllEvents: el => {
-                                for (const eventConfig of eventConfigs) {
-                                    el.removeEventListener(eventConfig.name, eventConfig.handler, false);
-                                }
+                                eventConfigs.forEach(eventConfig => el.removeEventListener(eventConfig.name, eventConfig.handler, false));
 
                                 $(el).off('focus', eventHandlers.onJqFocus);
 
