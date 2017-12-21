@@ -4020,19 +4020,6 @@ if (typeof define === 'function' && define.amd) {
     }
 
     /**
-     * When focusing out of the input, we check if the value has changed, and if it has, then we send a `change` event (since the native one would have been prevented by `e.preventDefault()` called in the other event listeners).
-     *
-     * @param {AutoNumericHolder} holder
-     * @param {Event} e
-     */
-    function onBlur(holder, e) {
-        if (e.target.value !== holder.valueOnFocus) {
-            triggerEvent('change', e.target);
-            // e.preventDefault(); // ...and immediately prevent the browser to send a second change event (that somehow gets picked up by jQuery, but not by `addEventListener()` //FIXME KNOWN BUG : This does not prevent the second change event to be picked up by jQuery, which adds '.00' at the end of an integer
-        }
-    }
-
-    /**
      * Handler for 'submit' events
      *
      * @param {object} $this jQuery-selected DOM element
@@ -4581,7 +4568,6 @@ if (typeof define === 'function' && define.amd) {
                         onKeypress: e => { onKeypress(holder, e); },
                         onInput: e => { onInput(holder, e); },
                         onKeyup: e => { onKeyup(holder, settings, e); },
-                        onBlur: e => { onBlur(holder, e); },
                         onPaste: e => { onPaste($this, holder, e); },
                         onJqFocus: () => { if (settings.selectAllOnFocusIfZero && $this.autoNumeric('getNumber') === 0) { setTimeout(() => $this.select(), 0); } },
                     };
@@ -4594,7 +4580,6 @@ if (typeof define === 'function' && define.amd) {
                         { name: 'keypress', handler: eventHandlers.onKeypress },
                         { name: 'input', handler: eventHandlers.onInput },
                         { name: 'keyup', handler: eventHandlers.onKeyup },
-                        { name: 'blur', handler: eventHandlers.onBlur },
                         { name: 'paste', handler: eventHandlers.onPaste },
                     ];
 
