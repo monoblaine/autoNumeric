@@ -695,7 +695,7 @@ const keyName = {
 
 const defaultMinimumValue     = '-999999999999.99';
 const defaultMaximumValue     = '999999999999.99';
-const defaultRoundingMethod   = 'U';
+const defaultRoundingMethod   = 'S';
 const defaultLeadingZero      = 'deny';
 const defaultSelectNumberOnly = true;
 
